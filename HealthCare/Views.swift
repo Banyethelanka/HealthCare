@@ -237,12 +237,26 @@ struct CheckupDetailView: View {
                 DatePicker("体检日期", selection: $report.checkupDate, displayedComponents: .date)
             }
             Section("原始文件") {
-                FileRow(file: report.file) {
+                Button {
                     previewURL = report.file.localURL
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(report.file.examName.isEmpty ? report.file.originalName : report.file.examName)
+                                .font(.headline)
+                                .foregroundStyle(Color.primary)
+                            Text(report.file.originalName)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
                 }
-                ShareLink(item: report.file.localURL) {
-                    Label("保存或导出原文件", systemImage: "square.and.arrow.up")
-                }
+                .buttonStyle(.plain)
             }
         }
         .navigationTitle("体检详情")
@@ -255,7 +269,7 @@ struct CheckupDetailView: View {
             }
         }
         .sheet(item: $previewURL) { url in
-            QuickLookPreview(url: url)
+            DocumentPreviewSheet(url: url)
         }
     }
 }
