@@ -1,3 +1,4 @@
+// QuickLookPreview.swift
 import QuickLook
 import SwiftUI
 
@@ -33,7 +34,6 @@ struct QuickLookPreview: UIViewControllerRepresentable {
     }
 }
 
-// 在调用处使用 SwiftUI 导航栏包裹
 struct DocumentPreviewSheet: View {
     let url: URL
     @Environment(\.dismiss) private var dismiss

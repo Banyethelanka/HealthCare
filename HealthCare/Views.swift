@@ -1,6 +1,8 @@
+// Views.swift
 import SwiftUI
 import UniformTypeIdentifiers
 
+// MARK: - Root View
 struct RootView: View {
     @State private var selectedTab: AppTab = .checkups
 
@@ -24,15 +26,14 @@ struct RootView: View {
             .tabItem { Label("我的", systemImage: "person.crop.circle") }
             .tag(AppTab.profile)
         }
-        .tint(.accentColor) // 使用系统原色
+        .tint(.accentColor)
     }
 }
 
 private enum AppTab {
-    case checkups
-    case visits
-    case profile
+    case checkups, visits, profile
 }
+
 // MARK: - 体检报告列表
 struct CheckupListView: View {
     @EnvironmentObject private var store: HealthStore
@@ -52,7 +53,16 @@ struct CheckupListView: View {
                         if store.selectedCheckups.isEmpty {
                             EmptyStateView(title: "还没有体检报告", message: "上传 PDF 或图片")
                         } else {
-                            MonthGroupedCheckups(reports: store.selectedCheckups)
+                            LazyVStack(alignment: .leading, spacing: 14) {
+                                ForEach(store.selectedCheckups) { report in
+                                    NavigationLink {
+                                        CheckupDetailView(report: report)
+                                    } label: {
+                                        CheckupCard(report: report)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
                         }
                     }
                 }
@@ -72,6 +82,7 @@ struct CheckupListView: View {
         }
     }
 }
+
 // MARK: - 就诊记录列表
 struct VisitListView: View {
     @EnvironmentObject private var store: HealthStore
@@ -83,15 +94,23 @@ struct VisitListView: View {
                 ContentColumn {
                     VStack(spacing: 18) {
                         HeaderView(title: "健康档案")
-                        MemberPicker() // 已移除加号，仅选择
+                        MemberPicker()
                         TopActionRow(buttonTitle: "新增就诊记录", systemImage: "plus") {
                             showingNewVisit = true
                         }
-                        Spacer()
                         if store.selectedVisits.isEmpty {
                             EmptyStateView(title: "还没有就诊记录", message: "手动填写就诊信息后，可继续上传病历、报告和影像资料。")
                         } else {
-                            MonthGroupedVisits(visits: store.selectedVisits)
+                            LazyVStack(alignment: .leading, spacing: 14) {
+                                ForEach(store.selectedVisits) { visit in
+                                    NavigationLink {
+                                        VisitDetailView(visit: visit)
+                                    } label: {
+                                        VisitCard(visit: visit)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
                         }
                     }
                 }
@@ -101,12 +120,13 @@ struct VisitListView: View {
         .navigationBarHidden(true)
         .sheet(isPresented: $showingNewVisit) {
             NavigationStack {
-                VisitEditorView(mode: .create)
+                VisitEditorView()
             }
         }
     }
 }
-// MARK: - 我的页
+
+// MARK: - 我的页面
 struct ProfileView: View {
     @EnvironmentObject private var store: HealthStore
     @State private var endpointText = ""
@@ -119,9 +139,15 @@ struct ProfileView: View {
                 ContentColumn {
                     VStack(spacing: 18) {
                         HeaderView(title: "我的")
-                        SettingsGroup(title: "家庭成员管理") {
+                        
+                        // 家庭成员管理
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("家庭成员管理")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
                             VStack(spacing: 0) {
-                                ForEach(store.members, id: \.id) { member in
+                                ForEach(Array(store.members.enumerated()), id: \.element.id) { index, member in
                                     HStack(spacing: 12) {
                                         Button {
                                             store.selectedMemberID = member.id
@@ -139,7 +165,6 @@ struct ProfileView: View {
                                                         .foregroundStyle(Color.accentColor)
                                                 }
                                             }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
                                             .contentShape(Rectangle())
                                         }
                                         .buttonStyle(.plain)
@@ -155,15 +180,24 @@ struct ProfileView: View {
                                         }
                                         .buttonStyle(.plain)
                                     }
-
-                                    if member.id != store.members.last?.id {
-                                        Divider()
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    
+                                    if index < store.members.count - 1 {
+                                        Divider().padding(.leading, 16)
                                     }
                                 }
                             }
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
                         }
-
-                        SettingsGroup(title: "新增成员") {
+                        
+                        // 新增成员
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("新增成员")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
                             HStack(spacing: 12) {
                                 TextField("输入成员姓名", text: $newMemberName)
                                     .textFieldStyle(.plain)
@@ -175,22 +209,45 @@ struct ProfileView: View {
                                 }
                                 .foregroundStyle(Color.accentColor)
                             }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
                         }
-
-                        SettingsGroup(title: "AI 解析接口") {
-                            VStack(alignment: .leading, spacing: 0) {
-                                SettingsFieldRow(title: "接口地址") {
+                        
+                        // AI 解析接口
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("AI 解析接口")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+                            VStack(spacing: 0) {
+                                HStack(spacing: 12) {
+                                    Text("接口地址")
+                                    Spacer()
                                     TextField("https://api.example.com/parse", text: $endpointText)
                                         .textInputAutocapitalization(.never)
                                         .keyboardType(.URL)
                                         .multilineTextAlignment(.trailing)
+                                        .foregroundStyle(.secondary)
                                 }
-                                Divider()
-                                SettingsFieldRow(title: "API Key") {
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                
+                                Divider().padding(.leading, 16)
+                                
+                                HStack(spacing: 12) {
+                                    Text("API Key")
+                                    Spacer()
                                     SecureField("输入 API Key", text: $apiKey)
                                         .multilineTextAlignment(.trailing)
+                                        .foregroundStyle(.secondary)
                                 }
-                                Divider()
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                
+                                Divider().padding(.leading, 16)
+                                
                                 Button {
                                     AIParsingService.shared.endpoint = URL(string: endpointText)
                                     AIParsingService.shared.apiKey = apiKey
@@ -203,10 +260,14 @@ struct ProfileView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                     .foregroundStyle(Color.accentColor)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
                                 }
                             }
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
                         }
-
+                        
                         Text("接口返回体检 { hospital, date }；就诊资料 { category, examName }。未配置时使用本地模拟解析。")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -223,6 +284,7 @@ struct ProfileView: View {
         }
     }
 }
+
 // MARK: - 体检详情页
 struct CheckupDetailView: View {
     @EnvironmentObject private var store: HealthStore
@@ -296,15 +358,23 @@ struct VisitDetailView: View {
         ScrollView {
             VStack(spacing: 18) {
                 // 就诊信息卡片
-                DetailInfoCard(title: "就诊信息") {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("就诊信息")
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(Color.primary)
+                    
                     VStack(spacing: 14) {
-                        InlineValueRow(title: "就诊日期") {
+                        HStack(alignment: .top, spacing: 12) {
+                            Text("就诊日期")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 72, alignment: .leading)
+                            Spacer(minLength: 12)
                             DatePicker("", selection: $visit.visitDate, displayedComponents: .date)
                                 .labelsHidden()
                         }
+                        .font(.subheadline)
                         
-                        // 医院：单选 + 新增按钮在下方 + 支持删除
-                        InlineSingleSelectRow(
+                        InlineSelectRow(
                             title: "就诊医院",
                             value: $visit.hospital,
                             options: store.hospitalOptions,
@@ -313,14 +383,13 @@ struct VisitDetailView: View {
                                 draftHospital = ""
                                 showingHospitalInput = true
                             },
-                            onDelete: { optionToDelete in
-                                hospitalToDelete = optionToDelete
+                            onDelete: { option in
+                                hospitalToDelete = option
                                 showingDeleteHospitalAlert = true
                             }
                         )
                         
-                        // 科室：单选 + 新增按钮在下方 + 支持删除
-                        InlineSingleSelectRow(
+                        InlineSelectRow(
                             title: "科室",
                             value: $visit.department,
                             options: store.departmentOptions,
@@ -329,34 +398,118 @@ struct VisitDetailView: View {
                                 draftDepartment = ""
                                 showingDepartmentInput = true
                             },
-                            onDelete: { optionToDelete in
-                                departmentToDelete = optionToDelete
+                            onDelete: { option in
+                                departmentToDelete = option
                                 showingDeleteDepartmentAlert = true
                             }
                         )
                         
-                        InlinePickerRow(title: "挂号类型", selection: $visit.registrationType, options: RegistrationType.allCases)
-                        InlineTextFieldRow(title: "医生", text: $visit.doctor, placeholder: "输入医生")
-                        InlineTextFieldRow(title: "就诊原因", text: $visit.reason, placeholder: "输入就诊原因", axis: .vertical)
-                    }
-                } trailingBottom: {
-                    Color.clear.frame(height: 0)
-                }
-
-                // 每个资料分类右上角独立上传按钮
-                ForEach(VisitAttachmentCategory.allCases.filter { $0 != .checkupReport }, id: \.self) { category in
-                    AttachmentGroupCard(
-                        title: category.rawValue,
-                        files: visit.attachments.filter { $0.category == category },
-                        parsing: parsing,
-                        onUpload: {
-                            uploadCategory = category
-                            importing = true
-                        },
-                        onPreview: { file in
-                            previewURL = file.localURL
+                        HStack(alignment: .top, spacing: 12) {
+                            Text("挂号类型")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 72, alignment: .leading)
+                            Spacer(minLength: 12)
+                            Picker("", selection: $visit.registrationType) {
+                                ForEach(RegistrationType.allCases) { type in
+                                    Text(type.rawValue).tag(type)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(maxWidth: 220)
                         }
-                    )
+                        .font(.subheadline)
+                        
+                        HStack(alignment: .top, spacing: 12) {
+                            Text("医生")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 72, alignment: .leading)
+                            Spacer(minLength: 12)
+                            TextField("输入医生", text: $visit.doctor)
+                                .multilineTextAlignment(.trailing)
+                        }
+                        .font(.subheadline)
+                        
+                        HStack(alignment: .top, spacing: 12) {
+                            Text("就诊原因")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 72, alignment: .leading)
+                            Spacer(minLength: 12)
+                            TextField("输入就诊原因", text: $visit.reason, axis: .vertical)
+                                .multilineTextAlignment(.trailing)
+                        }
+                        .font(.subheadline)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        Color.clear.frame(height: 0)
+                    }
+                }
+                .padding(18)
+                .background(Color(.secondarySystemGroupedBackground))
+                .cornerRadius(16)
+
+                // 附件卡片
+                ForEach(VisitAttachmentCategory.allCases.filter { $0 != .checkupReport }, id: \.self) { category in
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Text(category.rawValue)
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(Color.primary)
+                            Spacer()
+                            GlassActionButton(title: parsing ? "解析中" : "上传", systemImage: "square.and.arrow.up") {
+                                uploadCategory = category
+                                importing = true
+                            }
+                            .disabled(parsing)
+                        }
+                        
+                        let files = visit.attachments.filter { $0.category == category }
+                        if files.isEmpty {
+                            Text("还没有上传\(category.rawValue)资料")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 8)
+                        } else {
+                            VStack(spacing: 10) {
+                                ForEach(files) { file in
+                                    Button {
+                                        previewURL = file.localURL
+                                    } label: {
+                                        HStack(spacing: 12) {
+                                            FileBadge(kind: file.localURL.pathExtension.uppercased().isEmpty ? "FILE" : file.localURL.pathExtension.uppercased())
+                                                .scaleEffect(0.78)
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(file.examName.isEmpty ? file.originalName : file.examName)
+                                                    .font(.headline)
+                                                    .foregroundStyle(Color.primary)
+                                                Text(file.originalName)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                                    .lineLimit(1)
+                                            }
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding()
+                                        .background(Color(.tertiarySystemBackground))
+                                        .cornerRadius(16)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        ShareLink(item: file.localURL) {
+                                            Label("保存或导出", systemImage: "square.and.arrow.up")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(18)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(16)
                 }
             }
             .padding(.horizontal, 16)
@@ -434,15 +587,11 @@ struct VisitDetailView: View {
         }
     }
 }
-// MARK: - 就诊详情页信息编辑
-struct VisitEditorView: View {
-    enum Mode {
-        case create
-    }
 
+// MARK: - 就诊编辑器
+struct VisitEditorView: View {
     @EnvironmentObject private var store: HealthStore
     @Environment(\.dismiss) private var dismiss
-    let mode: Mode
     @State private var visitDate = Date()
     @State private var hospital = ""
     @State private var department = ""
@@ -458,20 +607,72 @@ struct VisitEditorView: View {
         Form {
             Section("就诊信息") {
                 DatePicker("就诊时间", selection: $visitDate, displayedComponents: .date)
-                PickerSelectionField(title: "就诊医院", value: $hospital, options: store.hospitalOptions, placeholder: "选择医院") {
-                    draftHospital = hospital
-                    showingHospitalInput = true
+                
+                HStack {
+                    Text("就诊医院")
+                    Spacer()
+                    Menu {
+                        ForEach(store.hospitalOptions, id: \.self) { option in
+                            Button(option) { hospital = option }
+                        }
+                        Divider()
+                        Button(action: { showingHospitalInput = true }) {
+                            Label("新增医院", systemImage: "plus")
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(hospital.isEmpty ? "选择医院" : hospital)
+                                .foregroundStyle(hospital.isEmpty ? .secondary : .primary)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Button(action: { showingHospitalInput = true }) {
+                        Image(systemName: "plus")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Color.accentColor)
+                            .frame(width: 24, height: 24)
+                            .background(Color.accentColor.opacity(0.1), in: Circle())
+                    }
                 }
-                PickerSelectionField(title: "科室", value: $department, options: store.departmentOptions, placeholder: "选择科室") {
-                    draftDepartment = department
-                    showingDepartmentInput = true
+                
+                HStack {
+                    Text("科室")
+                    Spacer()
+                    Menu {
+                        ForEach(store.departmentOptions, id: \.self) { option in
+                            Button(option) { department = option }
+                        }
+                        Divider()
+                        Button(action: { showingDepartmentInput = true }) {
+                            Label("新增科室", systemImage: "plus")
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(department.isEmpty ? "选择科室" : department)
+                                .foregroundStyle(department.isEmpty ? .secondary : .primary)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Button(action: { showingDepartmentInput = true }) {
+                        Image(systemName: "plus")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Color.accentColor)
+                            .frame(width: 24, height: 24)
+                            .background(Color.accentColor.opacity(0.1), in: Circle())
+                    }
                 }
+                
                 Picker("挂号类型", selection: $registrationType) {
                     ForEach(RegistrationType.allCases) { type in
                         Text(type.rawValue).tag(type)
                     }
                 }
                 .pickerStyle(.segmented)
+                
                 TextField("医生", text: $doctor)
                 TextField("就诊原因", text: $reason, axis: .vertical)
             }
@@ -524,7 +725,6 @@ struct VisitEditorView: View {
 // MARK: - 公共组件
 private struct HeaderView: View {
     let title: String
-
     var body: some View {
         HStack {
             Text(title)
@@ -536,7 +736,6 @@ private struct HeaderView: View {
     }
 }
 
-// // MARK: - 成员选择器
 private struct MemberPicker: View {
     @EnvironmentObject private var store: HealthStore
 
@@ -558,20 +757,19 @@ private struct MemberPicker: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 7)
-                        .background(memberBackground(member))
+                        .background(
+                            Group {
+                                if store.selectedMemberID == member.id {
+                                    Capsule().fill(Color.accentColor)
+                                } else {
+                                    Capsule().fill(Color(.tertiarySystemBackground))
+                                }
+                            }
+                        )
                     }
                 }
             }
             .padding(.vertical, 2)
-        }
-    }
-
-    @ViewBuilder
-    private func memberBackground(_ member: FamilyMember) -> some View {
-        if store.selectedMemberID == member.id {
-            Capsule().fill(Color.accentColor)
-        } else {
-            Capsule().fill(Color(.tertiarySystemBackground))
         }
     }
 }
@@ -589,12 +787,10 @@ private struct TopActionRow: View {
     }
 }
 
-// 半透明毛玻璃按钮
 private struct GlassActionButton: View {
     let title: String
     let systemImage: String
     let action: () -> Void
-    
     @State private var isPressed = false
     
     var body: some View {
@@ -628,416 +824,20 @@ private struct GlassActionButton: View {
     }
 }
 
-// 日期高亮样式
-private struct AccentDateLabel: View {
-    let text: String
-
-    var body: some View {
-        HStack(spacing: 10) {
-            RoundedRectangle(cornerRadius: 2)
-                .fill(Color.accentColor)
-                .frame(width: 4, height: 22)
-            Text(text)
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(.secondary)
-        }
-    }
-}
-
-private struct DetailInfoCard<Content: View, Footer: View>: View {
-    let title: String
-    @ViewBuilder let content: Content
-    @ViewBuilder let trailingBottom: Footer
-
-    init(title: String, @ViewBuilder content: () -> Content, @ViewBuilder trailingBottom: () -> Footer) {
-        self.title = title
-        self.content = content()
-        self.trailingBottom = trailingBottom()
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.headline.weight(.semibold))
-                .foregroundStyle(Color.primary)
-            content
-            HStack {
-                Spacer()
-                trailingBottom
-            }
-        }
-        .padding(18)
-        .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(16)
-    }
-}
-
-// 资料卡片：右上角上传按钮
-private struct AttachmentGroupCard: View {
-    let title: String
-    let files: [HealthFile]
-    let parsing: Bool
-    let onUpload: () -> Void
-    let onPreview: (HealthFile) -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .center) {
-                Text(title)
-                    .font(.headline.weight(.semibold))
-                    .foregroundStyle(Color.primary)
-                Spacer()
-                GlassActionButton(title: parsing ? "解析中" : "上传", systemImage: "square.and.arrow.up", action: onUpload)
-                    .disabled(parsing)
-            }
-
-            if files.isEmpty {
-                Text("还没有上传\(title)资料")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 8)
-            } else {
-                VStack(spacing: 10) {
-                    ForEach(files) { file in
-                        FileRow(file: file) {
-                            onPreview(file)
-                        }
-                    }
-                }
-            }
-        }
-        .padding(18)
-        .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(16)
-    }
-}
-
-private struct PickerSelectionField: View {
-    let title: String
-    @Binding var value: String
-    let options: [String]
-    let placeholder: String
-    let onAdd: () -> Void
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(title)
-                .foregroundStyle(Color.primary)
-            Spacer()
-            Menu {
-                ForEach(options, id: \.self) { option in
-                    Button(option) { value = option }
-                }
-            } label: {
-                HStack(spacing: 6) {
-                    Text(value.isEmpty ? placeholder : value)
-                        .foregroundStyle(value.isEmpty ? .secondary : .primary)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .disabled(options.isEmpty)
-
-            Button(action: onAdd) {
-                Image(systemName: "plus")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 24, height: 24)
-                    .background(Color.accentColor.opacity(0.1), in: Circle())
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.vertical, 4)
-    }
-}
-
-// 单选选择器（就诊详情专用）
-private struct InlineSingleSelectRow: View {
-    let title: String
-    @Binding var value: String
-    let options: [String]
-    let placeholder: String
-    let onAdd: () -> Void
-    let onDelete: (String) -> Void
-    
-    @State private var showDeleteAlert = false
-    @State private var optionToDelete = ""
-    @State private var showOptionsSheet = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(title)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 72, alignment: .leading)
-                Spacer()
-                
-                // 原生 Menu 作为下拉选择器
-                Menu {
-                    // 选项列表
-                    ForEach(options, id: \.self) { option in
-                        Button {
-                            value = option
-                        } label: {
-                            HStack {
-                                Text(option)
-                                if value == option {
-                                    Spacer()
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    // 新增按钮
-                    Button {
-                        onAdd()
-                    } label: {
-                        Label("新增\(title)", systemImage: "plus")
-                    }
-                    
-                    // 管理选项（进入编辑模式）
-                    Button {
-                        showOptionsSheet = true
-                    } label: {
-                        Label("管理\(title)", systemImage: "pencil")
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        Text(value.isEmpty ? placeholder : value)
-                            .foregroundColor(value.isEmpty ? .secondary : .accentColor)
-                        Image(systemName: "chevron.down")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-        }
-        .font(.subheadline)
-        .sheet(isPresented: $showOptionsSheet) {
-            OptionsManagementSheet(
-                title: title,
-                options: options,
-                onDelete: { option in
-                    optionToDelete = option
-                    showDeleteAlert = true
-                }
-            )
-        }
-        .alert("确认删除", isPresented: $showDeleteAlert) {
-            Button("取消", role: .cancel) {}
-            Button("删除", role: .destructive) {
-                onDelete(optionToDelete)
-                if value == optionToDelete {
-                    value = ""
-                }
-            }
-        } message: {
-            Text("确定要删除“\(optionToDelete)”吗？")
-        }
-    }
-}
-
-// 选项管理 Sheet（支持左滑删除）
-private struct OptionsManagementSheet: View {
-    let title: String
-    let options: [String]
-    let onDelete: (String) -> Void
-    
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(options, id: \.self) { option in
-                    Text(option)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                onDelete(option)
-                            } label: {
-                                Label("删除", systemImage: "trash")
-                            }
-                            .tint(.red)  // 明确指定红色
-                        }
-                }
-            }
-            .navigationTitle("管理\(title)")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("完成") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
-private struct InlineValueRow<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text(title)
-                .foregroundStyle(.secondary)
-                .frame(width: 72, alignment: .leading)
-            Spacer(minLength: 12)
-            content
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .multilineTextAlignment(.trailing)
-        }
-        .font(.subheadline)
-    }
-}
-
-private struct InlineTextFieldRow: View {
-    let title: String
-    @Binding var text: String
-    let placeholder: String
-    var axis: Axis = .horizontal
-
-    var body: some View {
-        InlineValueRow(title: title) {
-            TextField(placeholder, text: $text, axis: axis)
-                .multilineTextAlignment(.trailing)
-        }
-    }
-}
-
-private struct InlinePickerRow<Option: CaseIterable & Identifiable & Hashable & RawRepresentable>: View where Option.RawValue == String {
-    let title: String
-    @Binding var selection: Option
-    let options: [Option]
-
-    var body: some View {
-        InlineValueRow(title: title) {
-            Picker(title, selection: $selection) {
-                ForEach(options, id: \.self) { option in
-                    Text(option.rawValue).tag(option)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 220)
-        }
-    }
-}
-
-private struct SettingsGroup<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 4)
-            VStack(spacing: 0) {
-                content
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 14)
-            }
-            .background(Color(.secondarySystemGroupedBackground))
-            .cornerRadius(16)
-        }
-    }
-}
-
-private struct SettingsFieldRow<Content: View>: View {
-    let title: String
-    @ViewBuilder let trailing: Content
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(title)
-                .foregroundStyle(Color.primary)
-            Spacer()
-            trailing
-                .foregroundStyle(.secondary)
-        }
-        .padding(.vertical, 14)
-    }
-}
-
-private struct AppScreen<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        ZStack {
-            AppBackground()
-            content
-        }
-        .toolbar(.hidden, for: .navigationBar)
-    }
-}
-
-private struct ContentColumn<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        GeometryReader { proxy in
-            let isWide = proxy.size.width > 500
-
-            VStack(spacing: 0) {
-                content
-                    .frame(maxWidth: isWide ? 430 : .infinity, alignment: .top)
-                    .padding(.horizontal, isWide ? 24 : 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 28)
-            }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .frame(minHeight: proxy.size.height, alignment: .top)
-        }
-    }
-}
-
-private struct MonthGroupedCheckups: View {
-    let reports: [CheckupReport]
-
-    var body: some View {
-        LazyVStack(alignment: .leading, spacing: 14) {
-            ForEach(reports) { report in
-                NavigationLink {
-                    CheckupDetailView(report: report)
-                } label: {
-                    CheckupCard(report: report)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
-private struct MonthGroupedVisits: View {
-    let visits: [VisitRecord]
-
-    var body: some View {
-        LazyVStack(alignment: .leading, spacing: 14) {
-            ForEach(visits) { visit in
-                NavigationLink {
-                    VisitDetailView(visit: visit)
-                } label: {
-                    VisitCard(visit: visit)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
-// 体检卡片
 private struct CheckupCard: View {
     let report: CheckupReport
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            AccentDateLabel(text: DateFormatter.appDayFormatter.string(from: report.checkupDate))
+            HStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.accentColor)
+                    .frame(width: 4, height: 22)
+                Text(DateFormatter.appDayFormatter.string(from: report.checkupDate))
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.secondary)
+            }
+            
             HStack(spacing: 14) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(report.file.examName.isEmpty ? "体检报告" : report.file.examName)
@@ -1059,21 +859,26 @@ private struct CheckupCard: View {
     }
 }
 
-// 就诊卡片（日期已美化）
 private struct VisitCard: View {
     let visit: VisitRecord
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            AccentDateLabel(text: DateFormatter.appDayFormatter.string(from: visit.visitDate))
+            HStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.accentColor)
+                    .frame(width: 4, height: 22)
+                Text(DateFormatter.appDayFormatter.string(from: visit.visitDate))
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.secondary)
+            }
+            
             VStack(alignment: .leading, spacing: 6) {
-                // 就诊原因
                 Text(visit.reason.isEmpty ? "未填写就诊原因" : visit.reason)
                     .font(.headline)
                     .foregroundStyle(Color.primary)
                     .lineLimit(3)
                 
-                // 新增：医院 + 科室 显示
                 HStack(spacing: 8) {
                     Text(visit.hospital.isEmpty ? "未填写医院" : visit.hospital)
                         .font(.subheadline)
@@ -1083,7 +888,6 @@ private struct VisitCard: View {
                         Text("·")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        
                         Text(visit.department)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -1095,41 +899,6 @@ private struct VisitCard: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.tertiarySystemBackground))
             .cornerRadius(16)
-        }
-    }
-}
-
-private struct FileRow: View {
-    let file: HealthFile
-    let onPreview: () -> Void
-
-    var body: some View {
-        Button(action: onPreview) {
-            HStack(spacing: 12) {
-                FileBadge(kind: file.localURL.pathExtension.uppercased().isEmpty ? "FILE" : file.localURL.pathExtension.uppercased())
-                    .scaleEffect(0.78)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(file.examName.isEmpty ? file.originalName : file.examName)
-                        .font(.headline)
-                        .foregroundStyle(Color.primary)
-                    Text(file.originalName)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-            .background(Color(.tertiarySystemBackground))
-            .cornerRadius(16)
-        }
-        .buttonStyle(.plain)
-        .contextMenu {
-            ShareLink(item: file.localURL) {
-                Label("保存或导出", systemImage: "square.and.arrow.up")
-            }
         }
     }
 }
@@ -1176,25 +945,135 @@ private struct EmptyStateView: View {
     }
 }
 
-// 原生系统背景
-private struct AppBackground: View {
+private struct AppScreen<Content: View>: View {
+    @ViewBuilder let content: Content
+
     var body: some View {
-        Color(.systemGroupedBackground)
-            .ignoresSafeArea()
+        ZStack {
+            Color(.systemGroupedBackground).ignoresSafeArea()
+            content
+        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
+private struct ContentColumn<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        GeometryReader { proxy in
+            let isWide = proxy.size.width > 500
+            VStack(spacing: 0) {
+                content
+                    .frame(maxWidth: isWide ? 430 : .infinity, alignment: .top)
+                    .padding(.horizontal, isWide ? 24 : 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 28)
+            }
+            .frame(maxWidth: .infinity, alignment: .top)
+            .frame(minHeight: proxy.size.height, alignment: .top)
+        }
+    }
+}
+
+private struct InlineSelectRow: View {
+    let title: String
+    @Binding var value: String
+    let options: [String]
+    let placeholder: String
+    let onAdd: () -> Void
+    let onDelete: (String) -> Void
+    
+    @State private var showDeleteAlert = false
+    @State private var optionToDelete = ""
+    @State private var showOptionsSheet = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 72, alignment: .leading)
+                Spacer()
+                
+                Menu {
+                    ForEach(options, id: \.self) { option in
+                        Button {
+                            value = option
+                        } label: {
+                            HStack {
+                                Text(option)
+                                if value == option {
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                    Divider()
+                    Button(action: onAdd) {
+                        Label("新增\(title)", systemImage: "plus")
+                    }
+                    Button(action: { showOptionsSheet = true }) {
+                        Label("管理\(title)", systemImage: "pencil")
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(value.isEmpty ? placeholder : value)
+                            .foregroundColor(value.isEmpty ? .secondary : .accentColor)
+                        Image(systemName: "chevron.down")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        }
+        .font(.subheadline)
+        .sheet(isPresented: $showOptionsSheet) {
+            NavigationStack {
+                List {
+                    ForEach(options, id: \.self) { option in
+                        Text(option)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    optionToDelete = option
+                                    showDeleteAlert = true
+                                } label: {
+                                    Label("删除", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
+                    }
+                }
+                .navigationTitle("管理\(title)")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("完成") { showOptionsSheet = false }
+                    }
+                }
+            }
+        }
+        .alert("确认删除", isPresented: $showDeleteAlert) {
+            Button("取消", role: .cancel) {}
+            Button("删除", role: .destructive) {
+                onDelete(optionToDelete)
+                if value == optionToDelete {
+                    value = ""
+                }
+            }
+        } message: {
+            Text("确定要删除“\(optionToDelete)”吗？")
+        }
+    }
+}
+
+// MARK: - Extensions
 extension URL: @retroactive Identifiable {
     public var id: String { absoluteString }
 }
 
-// 全局使用系统配色
 extension Color {
-    static let appBlue = Color.accentColor
-    static let appNavy = Color.primary
-    static let appPurple = Color.accentColor
-    static let appBackground = Color(.systemGroupedBackground)
-
     init(hex: String) {
         let clean = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -1204,66 +1083,4 @@ extension Color {
         let blue = Double(int & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue)
     }
-}
-
-// 未使用组件保留
-private struct VisitSummaryEditor: View {
-    @EnvironmentObject private var store: HealthStore
-    @Binding var visit: VisitRecord
-    let onSave: () -> Void
-
-    var body: some View { EmptyView() }
-}
-
-private struct VisitCardRow: View {
-    let label: String
-    let value: String
-    var lineLimit: Int = 1
-    var body: some View { EmptyView() }
-}
-
-private struct OptionInputField: View {
-    let title: String
-    @Binding var text: String
-    let options: [String]
-    let placeholder: String
-    var body: some View { EmptyView() }
-}
-
-private struct SectionShell<Content: View>: View {
-    let title: String
-    let systemImage: String
-    @ViewBuilder var content: Content
-    var body: some View { EmptyView() }
-}
-
-private struct InlineTextRow: View {
-    let title: String
-    @Binding var text: String
-    let placeholder: String
-    var axis: Axis = .horizontal
-    var body: some View { EmptyView() }
-}
-
-private struct InlineDateRow: View {
-    let title: String
-    @Binding var date: Date
-    var body: some View { EmptyView() }
-}
-
-private struct InlineOptionRow: View {
-    let title: String
-    @Binding var text: String
-    let options: [String]
-    let placeholder: String
-    var body: some View { EmptyView() }
-}
-
-private struct InlineSelectRow: View {
-    let title: String
-    @Binding var value: String
-    let options: [String]
-    let placeholder: String
-    let onAdd: () -> Void
-    var body: some View { EmptyView() }
 }
