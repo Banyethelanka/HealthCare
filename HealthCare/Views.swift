@@ -84,12 +84,10 @@ struct VisitListView: View {
                     VStack(spacing: 18) {
                         HeaderView(title: "健康档案")
                         MemberPicker() // 已移除加号，仅选择
-                        HStack {
-                            TopActionRow(buttonTitle: "新增就诊记录", systemImage: "plus") {
-                                showingNewVisit = true
-                            }
-                            Spacer()
+                        TopActionRow(buttonTitle: "新增就诊记录", systemImage: "plus") {
+                            showingNewVisit = true
                         }
+                        Spacer()
                         if store.selectedVisits.isEmpty {
                             EmptyStateView(title: "还没有就诊记录", message: "手动填写就诊信息后，可继续上传病历、报告和影像资料。")
                         } else {
@@ -275,6 +273,10 @@ struct VisitDetailView: View {
     @State private var showingDepartmentInput = false
     @State private var draftHospital = ""
     @State private var draftDepartment = ""
+    @State private var showingDeleteHospitalAlert = false
+    @State private var showingDeleteDepartmentAlert = false
+    @State private var hospitalToDelete = ""
+    @State private var departmentToDelete = ""
 
     var body: some View {
         ScrollView {
@@ -287,27 +289,37 @@ struct VisitDetailView: View {
                                 .labelsHidden()
                         }
                         
-                        // 医院：单选 + 加号新增
+                        // 医院：单选 + 新增按钮在下方 + 支持删除
                         InlineSingleSelectRow(
                             title: "就诊医院",
                             value: $visit.hospital,
                             options: store.hospitalOptions,
-                            placeholder: "请选择"
-                        ) {
-                            draftHospital = ""
-                            showingHospitalInput = true
-                        }
+                            placeholder: "请选择",
+                            onAdd: {
+                                draftHospital = ""
+                                showingHospitalInput = true
+                            },
+                            onDelete: { optionToDelete in
+                                hospitalToDelete = optionToDelete
+                                showingDeleteHospitalAlert = true
+                            }
+                        )
                         
-                        // 科室：单选 + 加号新增
+                        // 科室：单选 + 新增按钮在下方 + 支持删除
                         InlineSingleSelectRow(
                             title: "科室",
                             value: $visit.department,
                             options: store.departmentOptions,
-                            placeholder: "请选择"
-                        ) {
-                            draftDepartment = ""
-                            showingDepartmentInput = true
-                        }
+                            placeholder: "请选择",
+                            onAdd: {
+                                draftDepartment = ""
+                                showingDepartmentInput = true
+                            },
+                            onDelete: { optionToDelete in
+                                departmentToDelete = optionToDelete
+                                showingDeleteDepartmentAlert = true
+                            }
+                        )
                         
                         InlinePickerRow(title: "挂号类型", selection: $visit.registrationType, options: RegistrationType.allCases)
                         InlineTextFieldRow(title: "医生", text: $visit.doctor, placeholder: "输入医生")
@@ -380,6 +392,28 @@ struct VisitDetailView: View {
                     visit.department = trimmed
                 }
             }
+        }
+        .alert("确认删除", isPresented: $showingDeleteHospitalAlert) {
+            Button("取消", role: .cancel) {}
+            Button("删除", role: .destructive) {
+                store.deleteHospitalOption(hospitalToDelete)
+                if visit.hospital == hospitalToDelete {
+                    visit.hospital = ""
+                }
+            }
+        } message: {
+            Text("确定要删除“\(hospitalToDelete)”吗？所有使用该医院的就诊记录将被清空。")
+        }
+        .alert("确认删除", isPresented: $showingDeleteDepartmentAlert) {
+            Button("取消", role: .cancel) {}
+            Button("删除", role: .destructive) {
+                store.deleteDepartmentOption(departmentToDelete)
+                if visit.department == departmentToDelete {
+                    visit.department = ""
+                }
+            }
+        } message: {
+            Text("确定要删除“\(departmentToDelete)”吗？所有使用该科室的就诊记录将被清空。")
         }
         .sheet(item: $previewURL) { url in
             QuickLookPreview(url: url)
@@ -546,16 +580,35 @@ private struct GlassActionButton: View {
     let title: String
     let systemImage: String
     let action: () -> Void
-
+    
+    @State private var isPressed = false
+    
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            withAnimation(.easeOut(duration: 0.1)) {
+                isPressed = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isPressed = false
+                action()
+            }
+        }) {
             Label(title, systemImage: systemImage)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(Color.accentColor)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(Color.white)
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                    }
+                )
+                .shadow(color: Color.black.opacity(0.08), radius: isPressed ? 2 : 4, x: 0, y: isPressed ? 1 : 2)
+                .scaleEffect(isPressed ? 0.97 : 1)
+                .animation(.easeOut(duration: 0.15), value: isPressed)
         }
         .buttonStyle(.plain)
     }
@@ -693,13 +746,51 @@ private struct InlineSingleSelectRow: View {
     let options: [String]
     let placeholder: String
     let onAdd: () -> Void
+    let onDelete: (String) -> Void
+    
+    @State private var showDeleteAlert = false
+    @State private var optionToDelete = ""
+    @State private var showOptionsSheet = false
 
     var body: some View {
-        InlineValueRow(title: title) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 72, alignment: .leading)
+                Spacer()
+                
+                // 原生 Menu 作为下拉选择器
                 Menu {
+                    // 选项列表
                     ForEach(options, id: \.self) { option in
-                        Button(option) { value = option }
+                        Button {
+                            value = option
+                        } label: {
+                            HStack {
+                                Text(option)
+                                if value == option {
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    // 新增按钮
+                    Button {
+                        onAdd()
+                    } label: {
+                        Label("新增\(title)", systemImage: "plus")
+                    }
+                    
+                    // 管理选项（进入编辑模式）
+                    Button {
+                        showOptionsSheet = true
+                    } label: {
+                        Label("管理\(title)", systemImage: "pencil")
                     }
                 } label: {
                     HStack(spacing: 4) {
@@ -710,13 +801,63 @@ private struct InlineSingleSelectRow: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                
-                Button(action: onAdd) {
-                    Image(systemName: "plus")
-                        .font(.caption)
-                        .foregroundColor(.accentColor)
-                        .frame(width: 22, height: 22)
-                        .background(Circle().fill(Color.accentColor.opacity(0.1)))
+            }
+        }
+        .font(.subheadline)
+        .sheet(isPresented: $showOptionsSheet) {
+            OptionsManagementSheet(
+                title: title,
+                options: options,
+                onDelete: { option in
+                    optionToDelete = option
+                    showDeleteAlert = true
+                }
+            )
+        }
+        .alert("确认删除", isPresented: $showDeleteAlert) {
+            Button("取消", role: .cancel) {}
+            Button("删除", role: .destructive) {
+                onDelete(optionToDelete)
+                if value == optionToDelete {
+                    value = ""
+                }
+            }
+        } message: {
+            Text("确定要删除“\(optionToDelete)”吗？")
+        }
+    }
+}
+
+// 选项管理 Sheet（支持左滑删除）
+private struct OptionsManagementSheet: View {
+    let title: String
+    let options: [String]
+    let onDelete: (String) -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(options, id: \.self) { option in
+                    Text(option)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                onDelete(option)
+                            } label: {
+                                Label("删除", systemImage: "trash")
+                            }
+                            .tint(.red)  // 明确指定红色
+                        }
+                }
+            }
+            .navigationTitle("管理\(title)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("完成") {
+                        dismiss()
+                    }
                 }
             }
         }

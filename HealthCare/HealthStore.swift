@@ -199,6 +199,28 @@ final class HealthStore: ObservableObject {
     private func uniqueOptions(from values: [String]) -> [String] {
         Array(Set(values.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })).sorted()
     }
+    
+    // 删除医院选项（从所有就诊记录中移除该医院，如果该医院存在）
+        func deleteHospitalOption(_ hospital: String) {
+            // 从所有就诊记录中移除该医院
+            for index in visits.indices {
+                if visits[index].hospital == hospital {
+                    visits[index].hospital = ""
+                }
+            }
+            save()
+        }
+
+        // 删除科室选项（从所有就诊记录中移除该科室，如果该科室存在）
+        func deleteDepartmentOption(_ department: String) {
+            // 从所有就诊记录中移除该科室
+            for index in visits.indices {
+                if visits[index].department == department {
+                    visits[index].department = ""
+                }
+            }
+            save()
+        }
 }
 
 private struct HealthSnapshot: Codable {
