@@ -1,0 +1,79 @@
+{
+  "" : {
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCare-primary.dia",
+    "emit-module-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCare-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCare-primary-emit-module.dia",
+    "pch" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCare-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCare-primary.swiftdeps"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/AIParsingService.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/AIParsingService~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/FileLibrary.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/FileLibrary~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/HealthCareApp.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthCareApp~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/HealthStore.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/HealthStore~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/Models.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Models~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/QuickLookPreview.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/QuickLookPreview~partial.swiftmodule"
+  },
+  "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/Views.swift" : {
+    "const-values" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.swiftconstvalues",
+    "dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.d",
+    "diagnostics" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.dia",
+    "index-unit-output-path" : "/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.o",
+    "llvm-bc" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.bc",
+    "object" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.o",
+    "swift-dependencies" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views.swiftdeps",
+    "swiftmodule" : "/Users/lijinxi/Documents/Codex/HealthCare/DerivedData/Build/Intermediates.noindex/HealthCare.build/Debug-iphoneos/HealthCare.build/Objects-normal/arm64/Views~partial.swiftmodule"
+  }
+}

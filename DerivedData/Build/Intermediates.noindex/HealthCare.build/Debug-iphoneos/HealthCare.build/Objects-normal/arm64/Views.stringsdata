@@ -1,0 +1,320 @@
+{
+  "source": "/Users/lijinxi/Documents/Codex/HealthCare/HealthCare/Views.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "体检报告",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊记录",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "我的",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "接口返回体检 { hospital, date }；就诊资料 { category, examName }。未配置时使用本地模拟解析。",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "输入成员姓名",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "https://api.example.com/parse",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "输入 API Key",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存配置",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 181
+        }
+      },
+      {
+        "comment": "",
+        "key": "体检详情",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 230
+        }
+      },
+      {
+        "comment": "",
+        "key": "体检信息",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "原始文件",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "体检医院",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 218
+        }
+      },
+      {
+        "comment": "",
+        "key": "体检日期",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 219
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存或导出原文件",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 233
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊详情",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 293
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊信息",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 255
+        }
+      },
+      {
+        "comment": "",
+        "key": "挂号类型",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 259
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 296
+        }
+      },
+      {
+        "comment": "",
+        "key": "新增就诊",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 354
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊信息",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 340
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊时间",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 341
+        }
+      },
+      {
+        "comment": "",
+        "key": "挂号类型",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 344
+        }
+      },
+      {
+        "comment": "",
+        "key": "医生",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 350
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊原因",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 351
+        }
+      },
+      {
+        "comment": "",
+        "key": "取消",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 357
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 360
+        }
+      },
+      {
+        "comment": "",
+        "key": "检测机构：%@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 600
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ · %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 627
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊时间",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 646
+        }
+      },
+      {
+        "comment": "",
+        "key": "挂号类型",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 649
+        }
+      },
+      {
+        "comment": "",
+        "key": "医生",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 655
+        }
+      },
+      {
+        "comment": "",
+        "key": "就诊原因",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 656
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存修改",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 657
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@：",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 672
+        }
+      },
+      {
+        "comment": "",
+        "key": "已保存选项",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 702
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存或导出",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 741
+        }
+      },
+      {
+        "comment": "",
+        "key": "选择已保存项",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 868
+        }
+      }
+    ]
+  },
+  "version": 1
+}
