@@ -278,67 +278,66 @@ struct VisitDetailView: View {
 
     var body: some View {
         ScrollView {
-            ContentColumn {
-                VStack(spacing: 18) {
-                    // 就诊信息卡片
-                    DetailInfoCard(title: "就诊信息") {
-                        VStack(spacing: 14) {
-                            InlineValueRow(title: "就诊日期") {
-                                DatePicker("", selection: $visit.visitDate, displayedComponents: .date)
-                                    .labelsHidden()
-                            }
-                            
-                            // 医院：单选 + 加号新增
-                            InlineSingleSelectRow(
-                                title: "就诊医院",
-                                value: $visit.hospital,
-                                options: store.hospitalOptions,
-                                placeholder: "请选择"
-                            ) {
-                                draftHospital = ""
-                                showingHospitalInput = true
-                            }
-                            
-                            // 科室：单选 + 加号新增
-                            InlineSingleSelectRow(
-                                title: "科室",
-                                value: $visit.department,
-                                options: store.departmentOptions,
-                                placeholder: "请选择"
-                            ) {
-                                draftDepartment = ""
-                                showingDepartmentInput = true
-                            }
-                            
-                            InlinePickerRow(title: "挂号类型", selection: $visit.registrationType, options: RegistrationType.allCases)
-                            InlineTextFieldRow(title: "医生", text: $visit.doctor, placeholder: "输入医生")
-                            InlineTextFieldRow(title: "就诊原因", text: $visit.reason, placeholder: "输入就诊原因", axis: .vertical)
+            VStack(spacing: 18) {
+                // 就诊信息卡片
+                DetailInfoCard(title: "就诊信息") {
+                    VStack(spacing: 14) {
+                        InlineValueRow(title: "就诊日期") {
+                            DatePicker("", selection: $visit.visitDate, displayedComponents: .date)
+                                .labelsHidden()
                         }
-                    } trailingBottom: {
-                        // 空占位，按钮移到每个卡片右上角
-                        Color.clear.frame(height: 0)
+                        
+                        // 医院：单选 + 加号新增
+                        InlineSingleSelectRow(
+                            title: "就诊医院",
+                            value: $visit.hospital,
+                            options: store.hospitalOptions,
+                            placeholder: "请选择"
+                        ) {
+                            draftHospital = ""
+                            showingHospitalInput = true
+                        }
+                        
+                        // 科室：单选 + 加号新增
+                        InlineSingleSelectRow(
+                            title: "科室",
+                            value: $visit.department,
+                            options: store.departmentOptions,
+                            placeholder: "请选择"
+                        ) {
+                            draftDepartment = ""
+                            showingDepartmentInput = true
+                        }
+                        
+                        InlinePickerRow(title: "挂号类型", selection: $visit.registrationType, options: RegistrationType.allCases)
+                        InlineTextFieldRow(title: "医生", text: $visit.doctor, placeholder: "输入医生")
+                        InlineTextFieldRow(title: "就诊原因", text: $visit.reason, placeholder: "输入就诊原因", axis: .vertical)
                     }
+                } trailingBottom: {
+                    Color.clear.frame(height: 0)
+                }
 
-                    // 每个资料分类右上角独立上传按钮
-                    ForEach(VisitAttachmentCategory.allCases.filter { $0 != .checkupReport }, id: \.self) { category in
-                        AttachmentGroupCard(
-                            title: category.rawValue,
-                            files: visit.attachments.filter { $0.category == category },
-                            parsing: parsing,
-                            onUpload: {
-                                uploadCategory = category
-                                importing = true
-                            },
-                            onPreview: { file in
-                                previewURL = file.localURL
-                            }
-                        )
-                    }
+                // 每个资料分类右上角独立上传按钮
+                ForEach(VisitAttachmentCategory.allCases.filter { $0 != .checkupReport }, id: \.self) { category in
+                    AttachmentGroupCard(
+                        title: category.rawValue,
+                        files: visit.attachments.filter { $0.category == category },
+                        parsing: parsing,
+                        onUpload: {
+                            uploadCategory = category
+                            importing = true
+                        },
+                        onPreview: { file in
+                            previewURL = file.localURL
+                        }
+                    )
                 }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
         }
-        .navigationTitle("就诊详情")
         .background(Color(.systemGroupedBackground))
+        .navigationTitle("就诊详情")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
